@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 import os
 import json
-from services import ocr_service  
+from documents.services import ocr_service  
 
 # Base directories
 base_input_dir_train = "C:\\Users\\Caetano\\Desktop\\estudos\\challenge-api-fast-api\\processed_documents\\train"

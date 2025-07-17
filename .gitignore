@@ -1,3 +1,13 @@
 .env
 document_processor/__pycache__/__init__.cpython-39.pyc
 document_processor/__pycache__/settings.cpython-39.pyc
+documents/__pycache__/__init__.cpython-39.pyc
+document_processor/__pycache__/urls.cpython-39.pyc
+documents/__pycache__/admin.cpython-39.pyc
+documents/__pycache__/apps.cpython-39.pyc
+documents/__pycache__/models.cpython-39.pyc
+documents/management/__pycache__/__init__.cpython-39.pyc
+documents/management/commands/__pycache__/__init__.cpython-39.pyc
+documents/management/commands/__pycache__/split_documents.cpython-39.pyc
+documents/services/__pycache__/__init__.cpython-39.pyc
+documents/services/__pycache__/ocr_service.cpython-39.pyc
