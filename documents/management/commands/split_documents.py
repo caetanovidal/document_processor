@@ -4,10 +4,10 @@ import json
 from documents.services import ocr_service  
 
 # Base directories
-base_input_dir_train = "C:\\Users\\Caetano\\Desktop\\estudos\\challenge-api-fast-api\\processed_documents\\train"
-base_input_dir_test = "C:\\Users\\Caetano\\Desktop\\estudos\\challenge-api-fast-api\\processed_documents\\test"
-base_output_dir_train = "C:\\Users\\Caetano\\Desktop\\estudos\\challenge-api-fast-api\\processed_documents\\json_train"
-base_output_dir_test = "C:\\Users\\Caetano\\Desktop\\estudos\\challenge-api-fast-api\\processed_documents\\json_test"
+base_input_dir_train = "C:\\Users\\Caetano\\Desktop\\estudos\\document_classifier\\document_processor\\documents\\data\\processed\\train"
+base_input_dir_test = "C:\\Users\\Caetano\\Desktop\\estudos\\document_classifier\\document_processor\\documents\\data\\processed\\test"
+base_output_dir_train = "C:\\Users\\Caetano\\Desktop\\estudos\\document_classifier\\document_processor\\documents\\data\\processed\\json_train"
+base_output_dir_test = "C:\\Users\\Caetano\\Desktop\\estudos\\document_classifier\\document_processor\\documents\\data\\processed\\json_test"
 
 folders = [
     'advertisement', 'budget', 'email', 'file_folder', 'form', 'handwritten',
