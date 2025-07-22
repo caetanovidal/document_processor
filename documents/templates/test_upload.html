@@ -1,0 +1,43 @@
+<!-- documents/templates/test_upload.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document OCR Test</title>
+</head>
+<body>
+  <h1>Upload Document</h1>
+  <form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" id="fileInput" required><br><br>
+    <button type="submit">Upload</button>
+  </form>
+
+  <h2>Response</h2>
+  <pre id="response"></pre>
+
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const formData = new FormData();
+      const file = document.getElementById('fileInput').files[0];
+      formData.append('file', file);
+
+      const responseElement = document.getElementById('response');
+      responseElement.textContent = "Processing...";
+
+      try {
+        const response = await fetch('/api/process-document/', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        responseElement.textContent = JSON.stringify(result, null, 2);
+      } catch (error) {
+        responseElement.textContent = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>

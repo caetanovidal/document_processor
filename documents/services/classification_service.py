@@ -7,6 +7,7 @@ import json
 import re
 import pickle
 from typing import Tuple, Optional
+from django.conf import settings  
 
 
 class DocumentType(Enum):
@@ -27,7 +28,7 @@ class DocumentType(Enum):
     form = 15
     news_article = 16
 
-json_folder = "processed_documents\\json_train"
+json_folder = os.path.join(settings.BASE_DIR, "documents", "data", "processed", "json_train")
 index_path = "doc_index.faiss"
 labels_path = "doc_labels.pkl"
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
