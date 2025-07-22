@@ -17,3 +17,5 @@ documents/__pycache__/views.cpython-39.pyc
 documents/migrations/__pycache__/__init__.cpython-39.pyc
 documents/services/__pycache__/classification_service.cpython-39.pyc
 documents/services/__pycache__/entity_extraction_service.cpython-39.pyc
+documents/management/commands/__pycache__/process_documents.cpython-39.pyc
+documents/utils/__pycache__/chromadb_utils.cpython-39.pyc
