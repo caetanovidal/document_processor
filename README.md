@@ -30,7 +30,7 @@ docker run -p 8000:8000 document-processor
 Make sure to:
 
 - Place your `credentials.json` in the project root
-- Update `.env` with your OpenAI (or Claude) API key
+- Update `.env` with your OpenAI API key
 
 ---
 
@@ -49,12 +49,12 @@ pip install -r requirements.txt
 
 ## 🔐 Required Setup
 
-### ✅ Add OpenAI/Claude API key
+### ✅ Add OpenAI API key
 
 Create a `.env` file:
 
 ```
-LLM_API_KEY=sk-...
+OPENAI_API_KEY = "your-gpy-key-here-Bbx_6AregOoXqdYD3caZGAT659WniYArvi5hHpPLcA"
 ```
 
 ### ✅ Set Google Vision credentials
