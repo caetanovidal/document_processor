@@ -11,8 +11,8 @@ from google.cloud import vision
 from io import BytesIO
 import os
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Caetano\\Downloads\\google_cloud_cred.json"
-
+#os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Caetano\\Downloads\\google_cloud_cred.json"
+print("GOOGLE CREDENTIALS:", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 UPLOAD_DIR = "temp_uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)

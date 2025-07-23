@@ -24,7 +24,10 @@ A Django-based document classification and entity extraction system using OCR, C
 docker build -t document-processor .
 
 # Run the container
-docker run -p 8000:8000 document-processor
+docker run -p 8000:8000 ^
+  -e GOOGLE_APPLICATION_CREDENTIALS=/app/google_cloud_cred.json ^ 
+  -v %cd%:/app ^
+  document-processor
 ```
 
 Make sure to:
