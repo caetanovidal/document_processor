@@ -7,6 +7,12 @@ from PIL import Image
 import uuid
 import shutil
 import easyocr
+from google.cloud import vision
+from io import BytesIO
+import os
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Caetano\\Downloads\\google_cloud_cred.json"
+
 
 UPLOAD_DIR = "temp_uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -25,6 +31,33 @@ def pdf_or_image(file_path):
         return "pdf"
 
     raise ValueError(f"Unsupported file format: '{file_ext}'. Only images and PDFs are allowed.")
+
+
+from google.cloud import vision
+from io import BytesIO
+
+vision_client = vision.ImageAnnotatorClient()
+
+
+def read_image_with_google_vision(image_input):
+    """
+    Accepts PIL Image or NumPy array, returns extracted text using Google Vision API.
+    """
+    if isinstance(image_input, np.ndarray):
+        image_input = Image.fromarray(image_input)
+
+    buffered = BytesIO()
+    image_input.save(buffered, format="PNG")
+    content = buffered.getvalue()
+
+    image = vision.Image(content=content)
+    response = vision_client.document_text_detection(image=image)
+
+    if response.error.message:
+        raise Exception(f"Google Vision API error: {response.error.message}")
+
+    return response.full_text_annotation.text
+
 
 
 def read_image_with_easyocr(image_input):
