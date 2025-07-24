@@ -17,7 +17,7 @@ class DocumentProcessingView(APIView):
             # Step 1: OCR
             image = ocr_service.read_image(file)
             enhanced = ocr_service.enhance_and_threshold(image)
-            text = ocr_service.read_image_with_easyocr(enhanced)
+            text = ocr_service.read_image_with_google_vision(enhanced)
 
             # Step 2: Classification
             doc_type, confidence = classification_service.classify_document_2(text)

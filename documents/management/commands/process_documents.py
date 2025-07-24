@@ -28,7 +28,7 @@ class Command(BaseCommand):
                     # OCR
                     img = ocr_service.read_image(file_path)
                     enhanced = ocr_service.enhance_and_threshold(img)
-                    text = ocr_service.read_image_with_easyocr(enhanced)
+                    text = ocr_service.read_image_with_google_vision(enhanced)
 
                     # Classification
                     doc_type, confidence = classification_service.classify_document_2(text)

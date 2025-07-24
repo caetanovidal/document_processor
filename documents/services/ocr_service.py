@@ -11,8 +11,8 @@ from google.cloud import vision
 from io import BytesIO
 import os
 
-#os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Caetano\\Downloads\\google_cloud_cred.json"
-print("GOOGLE CREDENTIALS:", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Caetano\\Downloads\\google_cloud_cred.json"
+#print("GOOGLE CREDENTIALS:", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 UPLOAD_DIR = "temp_uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -80,7 +80,7 @@ def read_image_from_pdf(file_path):
     text = ""
     for img in images:
         enchaced_image = enhance_and_threshold(img)
-        text += read_image_with_easyocr(enchaced_image) + "\n"
+        text += read_image_with_google_vision(enchaced_image) + "\n"
 
     return text
 
@@ -139,7 +139,7 @@ def extract_text_from_upload(upload_file) -> str:
         if pdf_or_image(temp_path) == 'image':
             img = read_image(temp_path)
             img = enhance_and_threshold(img)
-            text = read_image_with_easyocr(img)
+            text = read_image_with_google_vision(img)
         else:
             text = read_image_from_pdf(temp_path)
     finally:

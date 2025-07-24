@@ -10,8 +10,9 @@ base_output_dir_train = "C:\\Users\\Caetano\\Desktop\\estudos\\document_classifi
 base_output_dir_test = "C:\\Users\\Caetano\\Desktop\\estudos\\document_classifier\\document_processor\\documents\\data\\processed\\json_test"
 
 folders = [
-    'advertisement', 'budget', 'email', 'file_folder', 'form', 'handwritten',
-    'invoice', 'letter', 'memo', 'news_article', 'presentation', 'questionnaire',
+    #'advertisement', 'budget', 'email', 'file_folder', 'form', 'handwritten',
+    #'invoice', 'letter', 'memo', 'news_article', 
+    'presentation', 'questionnaire',
     'resume', 'scientific_publication', 'scientific_report', 'specification'
 ]
 
@@ -36,7 +37,7 @@ class Command(BaseCommand):
                         try:
                             img = ocr_service.read_image(file_path)
                             img = ocr_service.enhance_and_threshold(img)
-                            text = ocr_service.read_image_with_easyocr(img).replace('\n', '\\n')
+                            text = ocr_service.read_image_with_google_vision(img).replace('\n', '\\n')
                             samples.append({"text": text, "label": label})
                         except Exception as e:
                             self.stdout.write(self.style.ERROR(f"Error processing {file_path}: {e}"))
