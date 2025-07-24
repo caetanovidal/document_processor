@@ -7,11 +7,11 @@ A Django-based document classification and entity extraction system using OCR, C
 ## 🚀 Features
 
 - Upload and process image/PDF documents
-- OCR via EasyOCR (free) or Google Cloud Vision (paid, more accurate)
+- OCR via **Google Cloud Vision** (default) or EasyOCR (optional)
 - Classify documents into 16 types (resume, invoice, letter, etc.)
 - Extract relevant entities using a language model
-- Store document embeddings and metadata in ChromaDB
-- Test and view output via web interface
+- Store document embeddings and metadata in **ChromaDB**
+- Web UI to test and view output
 
 ---
 
@@ -19,32 +19,51 @@ A Django-based document classification and entity extraction system using OCR, C
 
 ### ♻️ Option 1: Docker (Recommended)
 
-```bash
-# Build the image
-docker build -t document-processor .
+#### ✅ Build the image
 
-# Run the container
+```bash
+docker build -t document-processor .
+```
+
+#### ✅ Run the container (with Google Vision enabled)
+
+```cmd
 docker run -p 8000:8000 ^
-  -e GOOGLE_APPLICATION_CREDENTIALS=/app/google_cloud_cred.json ^
+  -e GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json ^
   -v %cd%:/app ^
   document-processor
 ```
 
-Make sure to:
+#### 🔎 Docker usage examples
 
-- Place your `credentials.json` in the project root
-- Update `.env` with your OpenAI API key
+**Process and index documents in ChromaDB:**
+
+```cmd
+docker run --rm -v %cd%:/app document-processor ^
+  python manage.py process_documents --input-dir "/app/processed_documents/test/email"
+```
+
+**Preprocess dataset and split into JSON samples:**
+
+```cmd
+docker run --rm -v %cd%:/app document-processor ^
+  python manage.py split_documents
+```
+
+**Run Django server:**
+
+```cmd
+docker run -p 8000:8000 -v %cd%:/app document-processor ^
+  python manage.py runserver 0.0.0.0:8000
+```
 
 ---
 
 ### 🛠️ Option 2: Manual Setup
 
 ```bash
-# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+venv\Scripts\activate  # On Windows
 pip install -r requirements.txt
 ```
 
@@ -52,65 +71,34 @@ pip install -r requirements.txt
 
 ## 🔐 Required Setup
 
-### ✅ Add OpenAI API key
+### ✅ Add OpenAI API Key
 
 Create a `.env` file:
 
-```
-OPENAI_API_KEY = "your-gpy-key-here-Bbx_6AregOoXqdYD3caZGAT659WniYArvi5hHpPLcA"
+```dotenv
+OPENAI_API_KEY=your-openai-key-here
 ```
 
-### ✅ Set Google Vision credentials
+### ✅ Add Google Vision Credentials
 
-In `services/ocr_service.py`, update:
+Place your `credentials.json` in the root of the project. Docker uses:
 
-```python
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\path\\to\\google_cloud_cred.json"
 ```
+/app/credentials.json
+```
+
+You don’t need to manually set `os.environ[...]` inside the code. Docker handles it.
 
 ---
 
-## 🔍 Choose Your OCR Engine
+## 🔍 OCR Engine Configuration
 
-By default, the project uses **EasyOCR** (fast and free).\
-To use **Google Cloud Vision** (slower, more accurate):
+Google Cloud Vision is now the **default OCR engine**.
 
-1. Replace `read_image_with_easyocr()` in `ocr_service.py` with:
+If you want to switch to EasyOCR (free & fast):
 
-```python
-def read_image_with_google_vision(image_input):
-    from google.cloud import vision
-    from io import BytesIO
-    import numpy as np
-    from PIL import Image
-
-    vision_client = vision.ImageAnnotatorClient()
-
-    if isinstance(image_input, np.ndarray):
-        image_input = Image.fromarray(image_input)
-
-    buffered = BytesIO()
-    image_input.save(buffered, format="PNG")
-    content = buffered.getvalue()
-
-    image = vision.Image(content=content)
-    response = vision_client.document_text_detection(image=image)
-
-    if response.error.message:
-        raise Exception(f"Google Vision API error: {response.error.message}")
-
-    return response.full_text_annotation.text
-```
-
-2. Re-run the pre-processing to generate new training data.
-
----
-
-## 🧪 Usage Guide
-
-### ♻️ Process dataset to JSON
-
-Convert raw documents into labeled JSON (used for training):
+- Modify `ocr_service.py` to use `read_image_with_easyocr()`
+- Re-run:
 
 ```bash
 python manage.py split_documents
@@ -118,28 +106,52 @@ python manage.py split_documents
 
 ---
 
-### 🧠 Train & Upsert into ChromaDB
+## 🧪 Usage Guide
 
-Process each document, classify it, extract entities, and store in Chroma:
+### ♻️ Preprocess to JSON
 
 ```bash
-python manage.py process_documents --input-dir "C:\path\to\documents"
+python manage.py split_documents
 ```
 
----
+Or in Docker:
 
-### 🌐 Web Interface
+```bash
+docker run --rm -v %cd%:/app document-processor ^
+  python manage.py split_documents
+```
 
-Run the server:
+### 🧠 Process & Insert into ChromaDB
+
+```bash
+python manage.py process_documents --input-dir "C:\\path\\to\\documents"
+```
+
+Or in Docker:
+
+```bash
+docker run --rm -v %cd%:/app document-processor ^
+  python manage.py process_documents --input-dir "/app/processed_documents/test/email"
+```
+
+### 🌐 Launch Web Interface
 
 ```bash
 python manage.py runserver
 ```
 
-Then open:\
-[http://127.0.0.1:8000/api/test-upload/](http://127.0.0.1:8000/api/test-upload/)
+Or in Docker:
 
-Use this to upload a file and get a structured response.
+```bash
+docker run -p 8000:8000 -v %cd%:/app document-processor ^
+  python manage.py runserver 0.0.0.0:8000
+```
+
+Then open:
+
+```
+http://127.0.0.1:8000/api/test-upload/
+```
 
 ---
 
@@ -147,29 +159,20 @@ Use this to upload a file and get a structured response.
 
 ### `ocr_service.py`
 
-- `read_image()` – Load image from disk
-- `enhance_and_threshold()` – Preprocess for better OCR accuracy
-- `read_image_with_easyocr()` / `read_image_with_google_vision()` – Extract text
-
----
+- `read_image()` — Load image from disk
+- `enhance_and_threshold()` — Preprocess for better OCR
+- `read_image_with_google_vision()` — Google OCR (default)
+- `read_image_with_easyocr()` — Optional OCR engine
 
 ### `classification_service.py`
 
-- `classify_document_2(text)` → `(DocumentType, confidence)`\
-  Classifies text into one of 16 document types
-
----
+- `classify_document_2(text) → (DocumentType, confidence)`
 
 ### `entity_extraction_service.py`
 
-- `extract(text, document_type)` → `{ field: value }`\
-  Extracts structured fields from the text using LLM
-
----
+- `extract(text, document_type) → { field: value }`
 
 ### `process_documents` command
-
-Batch process and insert documents into ChromaDB:
 
 ```bash
 python manage.py process_documents --input-dir "/path/to/docs"
@@ -177,11 +180,15 @@ python manage.py process_documents --input-dir "/path/to/docs"
 
 ---
 
-## 📦 ChromaDB
+## 📆 ChromaDB
 
-All documents are embedded and stored in a local ChromaDB index at `chroma_data/`.
+Documents are embedded and stored in:
 
-To clean and reset:
+```
+chroma_data/
+```
+
+To reset:
 
 ```bash
 rm -rf chroma_data/
@@ -212,13 +219,13 @@ rm -rf chroma_data/
 
 ## ✅ Recommendations
 
-- ✅ Use Google Cloud Vision for better accuracy (especially for invoices and forms)
-- ✅ Retrain (`split_documents`) if you switch OCR engine
-- ✅ Use Docker for reproducible setup
+- Use **Google Cloud Vision** for better OCR accuracy (default)
+- Re-run `split_documents` if you switch OCR engine
+- Use Docker for consistency across environments
 
 ---
 
 ## 🤛 Need Help?
 
-If you run into issues or want to extend this with search, table extraction, or LLM comparison — open an issue or message the author.
+For bugs, feature requests, or support, open an issue or contact the author.
 
