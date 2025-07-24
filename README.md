@@ -17,6 +17,9 @@ A Django-based document classification and entity extraction system using OCR, C
 
 ## ⚙️ Installation Options
 
+youtube guide if needed:
+https://youtu.be/JcwlJf8rxw0
+
 ### ♻️ Option 1: Docker (Recommended)
 
 #### ✅ Build the image
