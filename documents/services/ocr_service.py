@@ -11,7 +11,10 @@ from google.cloud import vision
 from io import BytesIO
 import os
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Caetano\\Downloads\\google_cloud_cred.json"
+
+# if you running with out docker use this line to add our cred path
+#os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:\\Users\\Caetano\\Downloads\\google_cloud_cred.json" 
+
 #print("GOOGLE CREDENTIALS:", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 UPLOAD_DIR = "temp_uploads"
